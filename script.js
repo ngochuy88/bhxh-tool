@@ -41,7 +41,7 @@ document.querySelectorAll('.tab').forEach(btn => {
 });
 
 // ============================================================
-// TOGGLE DETAIL
+// TOGGLE DETAIL (TAB 1)
 // ============================================================
 document.getElementById('toggleDetailBtn').addEventListener('click', function() {
     const wrap = document.getElementById('detailWrap');
@@ -333,12 +333,135 @@ function calcVoluntary() {
 }
 
 // ============================================================
+// TAB 5: TỬ TUẤT (MỚI)
+// ============================================================
+function calcTuat() {
+    const income = parseFloat(document.getElementById('tuatIncome').value) || 0;
+    const subject = document.getElementById('tuatSubject').value;
+    const startYear = parseInt(document.getElementById('tuatStartYear').value) || 2015;
+    const startMonth = parseInt(document.getElementById('tuatStartMonth').value) || 7;
+    const endYear = parseInt(document.getElementById('tuatEndYear').value) || 2020;
+    const endMonth = parseInt(document.getElementById('tuatEndMonth').value) || 6;
+    const baseSalary = parseFloat(document.getElementById('tuatBaseSalary').value) || 2530000;
+
+    const support = SUPPORT[subject] || 0;
+
+    // Xác định số tháng đóng từ startMonth/startYear đến endMonth/endYear
+    let totalMonths = 0;
+    let rows = [];
+    let totalTuat = 0;
+    let totalDaDong = 0;
+
+    // Duyệt từng năm từ startYear đến endYear
+    for (let y = startYear; y <= endYear; y++) {
+        let months = 12;
+        if (y === startYear) {
+            months = 12 - startMonth + 1; // từ tháng bắt đầu đến tháng 12
+        }
+        if (y === endYear) {
+            months = endMonth; // từ tháng 1 đến tháng kết thúc
+        }
+        if (y === startYear && y === endYear) {
+            months = endMonth - startMonth + 1;
+            if (months < 1) months = 0;
+        }
+        if (months <= 0) continue;
+
+        const coef = getCoef(y);
+        const monthlyPay = income * 0.22 - support; // tiền đóng thực tế mỗi tháng
+        const yearlyPay = monthlyPay * months;
+        totalDaDong += yearlyPay;
+
+        // Tuất năm = thu nhập × hệ số × 2 × (số tháng đóng / 12)
+        const tuatYear = income * coef * 2 * (months / 12);
+        totalTuat += tuatYear;
+
+        rows.push({
+            year: y,
+            coef: coef,
+            months: months,
+            monthlyPay: monthlyPay,
+            yearlyPay: yearlyPay,
+            tuatYear: tuatYear
+        });
+        totalMonths += months;
+    }
+
+    // Trợ cấp mai táng (tính theo lương cơ sở hiện tại)
+    const maiTang = 10 * baseSalary;
+
+    // Tổng quyền lợi
+    const total = maiTang + totalTuat;
+
+    // Chênh lệch
+    const chenhLech = total - totalDaDong;
+
+    // Hiển thị badge
+    const years = Math.floor(totalMonths / 12);
+    const monthsRemain = totalMonths % 12;
+    let badgeText = years + ' năm';
+    if (monthsRemain > 0) badgeText += ' ' + monthsRemain + ' tháng';
+    if (totalMonths < 60) {
+        document.getElementById('tuatBadge').textContent = '⚠️ ' + badgeText + ' (chưa đủ 5 năm)';
+        document.getElementById('tuatBadge').className = 'badge badge-warning';
+    } else {
+        document.getElementById('tuatBadge').textContent = badgeText + ' (đủ 5 năm)';
+        document.getElementById('tuatBadge').className = 'badge badge-danger';
+    }
+
+    // Hiển thị kết quả
+    document.getElementById('tuatTotal').innerHTML = Math.round(total).toLocaleString() + ' <small>VNĐ</small>';
+    document.getElementById('tuatMaiTang').innerHTML = Math.round(maiTang).toLocaleString() + ' <small>VNĐ</small>';
+    document.getElementById('tuatTuat').innerHTML = Math.round(totalTuat).toLocaleString() + ' <small>VNĐ</small>';
+    document.getElementById('tuatDaDong').innerHTML = Math.round(totalDaDong).toLocaleString() + ' <small>VNĐ</small>';
+
+    const chenhLechEl = document.getElementById('tuatChenhLech');
+    chenhLechEl.innerHTML = Math.round(chenhLech).toLocaleString() + ' <small>VNĐ</small>';
+    if (chenhLech >= 0) {
+        chenhLechEl.className = 'val highlight-green';
+    } else {
+        chenhLechEl.className = 'val highlight-red';
+    }
+
+    document.getElementById('tuatSubInfo').innerHTML =
+        '📌 Mai táng: 10 × ' + baseSalary.toLocaleString() + ' = ' + Math.round(maiTang).toLocaleString() +
+        ' VNĐ  |  Tuất: Σ (Thu nhập × Hệ số × 2) = ' + Math.round(totalTuat).toLocaleString() + ' VNĐ';
+
+    // Bảng chi tiết
+    let html = '';
+    let totalTuatDisplay = 0;
+    for (let r of rows) {
+        totalTuatDisplay += r.tuatYear;
+        html += `<tr class="highlight">
+            <td>${r.year}</td>
+            <td>${r.coef.toFixed(2)}</td>
+            <td>${r.months}</td>
+            <td>${Math.round(r.monthlyPay).toLocaleString()}</td>
+            <td>${Math.round(r.yearlyPay).toLocaleString()}</td>
+            <td>${Math.round(r.tuatYear).toLocaleString()}</td>
+        </tr>`;
+    }
+    document.getElementById('detailTuatBody').innerHTML = html;
+    document.getElementById('totalTuatDisplay').textContent = Math.round(totalTuatDisplay).toLocaleString();
+    document.getElementById('detailTuatFoot').style.display = 'table-footer-group';
+
+    // Tự động mở bảng
+    const wrap = document.getElementById('detailTuatWrap');
+    const arrow = document.getElementById('arrowTuatIcon');
+    if (rows.length > 0) {
+        wrap.classList.add('open');
+        arrow.classList.add('open');
+    }
+}
+
+// ============================================================
 // GÁN SỰ KIỆN CHO CÁC NÚT
 // ============================================================
 document.getElementById('btnCalcPension').addEventListener('click', calcPension);
 document.getElementById('btnCalcBuyback').addEventListener('click', calcBuyback);
 document.getElementById('btnCalcAhead').addEventListener('click', calcAhead);
 document.getElementById('btnCalcVoluntary').addEventListener('click', calcVoluntary);
+document.getElementById('btnCalcTuat').addEventListener('click', calcTuat);
 
 // ============================================================
 // GÁN SỰ KIỆN INPUT CHO TỰ ĐỘNG TÍNH
@@ -346,6 +469,22 @@ document.getElementById('btnCalcVoluntary').addEventListener('click', calcVolunt
 document.querySelectorAll('#tab1 input, #tab1 select').forEach(el => {
     el.addEventListener('input', calcPension);
     el.addEventListener('change', calcPension);
+});
+
+// Tự động tính Tab 5
+document.querySelectorAll('#tab5 input, #tab5 select').forEach(el => {
+    el.addEventListener('input', calcTuat);
+    el.addEventListener('change', calcTuat);
+});
+
+// ============================================================
+// TOGGLE DETAIL (TAB 5)
+// ============================================================
+document.getElementById('toggleDetailTuatBtn').addEventListener('click', function() {
+    const wrap = document.getElementById('detailTuatWrap');
+    const arrow = document.getElementById('arrowTuatIcon');
+    wrap.classList.toggle('open');
+    arrow.classList.toggle('open');
 });
 
 // ============================================================
@@ -356,10 +495,11 @@ window.addEventListener('DOMContentLoaded', function() {
     calcBuyback();
     calcAhead();
     calcVoluntary();
+    calcTuat();
 });
 
 // ============================================================
-// OVERLAY ĐĂNG KÝ KÊNH
+// OVERLAY ĐĂNG KÝ KÊNH (PHẦN CUỐI ĐỂ ĐẢM BẢO)
 // ============================================================
 (function() {
     const overlay = document.getElementById('overlay');

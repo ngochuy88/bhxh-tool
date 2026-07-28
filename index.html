@@ -75,15 +75,15 @@
         /* ===== TABS ===== */
         .tabs {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
             gap: 4px;
             margin-bottom: 18px;
         }
         .tab {
-            padding: 10px 4px;
+            padding: 10px 2px;
             border: none;
             border-radius: 12px;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 600;
             color: #6a7f9b;
             background: #f0f4f8;
@@ -96,7 +96,7 @@
         }
         .tab .icon {
             display: block;
-            font-size: 18px;
+            font-size: 16px;
             margin-bottom: 2px;
         }
         .tab:hover {
@@ -138,6 +138,13 @@
             border-radius: 4px;
             font-size: 11px;
             font-weight: 500;
+        }
+        .note-danger {
+            background: #fef3f2;
+            border-left-color: #b91c1c;
+        }
+        .note-danger strong {
+            color: #b91c1c;
         }
 
         /* ===== FORM ===== */
@@ -186,6 +193,11 @@
             border-color: #1a4972;
             box-shadow: 0 0 0 4px rgba(26, 73, 114, 0.08);
             background: #fff;
+        }
+        .field input[readonly] {
+            background: #f5f7fa;
+            color: #4a6a85;
+            cursor: default;
         }
         .field select {
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234a6a85' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
@@ -239,6 +251,14 @@
         .btn-warning:hover {
             background: #9a7209;
         }
+        .btn-danger {
+            background: #b91c1c;
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(185, 28, 28, 0.2);
+        }
+        .btn-danger:hover {
+            background: #991b1b;
+        }
 
         /* ===== RESULT ===== */
         .result {
@@ -273,6 +293,12 @@
             font-weight: 500;
             color: #1a4972;
             margin: 4px 0 8px;
+        }
+        .result .sub-info {
+            font-size: 13px;
+            color: #1a4972;
+            margin: 4px 0 8px;
+            line-height: 1.5;
         }
 
         /* ===== GRID CARDS ===== */
@@ -312,6 +338,12 @@
             font-weight: 400;
             color: #4b6f8f;
         }
+        .card .val .highlight-green {
+            color: #1e7e34;
+        }
+        .card .val .highlight-red {
+            color: #b91c1c;
+        }
 
         /* ===== BADGE ===== */
         .badge {
@@ -332,6 +364,10 @@
         .badge-warning {
             background: #fff3cd;
             color: #856404;
+        }
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
         }
 
         /* ===== TOGGLE DETAIL ===== */
@@ -435,7 +471,11 @@
                 border-radius: 20px;
             }
             .tabs {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+            .tab {
+                font-size: 8px;
+                padding: 8px 2px;
             }
             .row,
             .row-3 {
@@ -586,25 +626,25 @@
 <body>
 
     <!-- ===== OVERLAY ĐĂNG KÝ KÊNH ===== -->
-   <div id="overlay">
-    <div class="overlay-box" id="overlayBox">
-        <div class="icon" id="iconDisplay">📺</div>
-        <h2 id="titleDisplay">Đăng ký kênh YouTube</h2>
-        <p id="descDisplay">
-            Để sử dụng công cụ tính BHXH, vui lòng <strong>đăng ký kênh</strong> của chúng tôi trên YouTube.
-            Một cú click nhỏ giúp chúng tôi có thêm động lực phát triển!
-        </p>
-        <a href="https://youtube.com/@bhxhbhytlc?si=Vjx489aXM1n0beZ0" target="_blank" class="btn-youtube" id="subscribeBtn">▶  Đăng ký kênh</a>
-        <div class="sub-text" id="subText">
-            ⏳ Sau khi đăng ký, trang sẽ <strong>tự động tải lại sau 5 giây</strong> để bạn sử dụng công cụ.
+    <div id="overlay">
+        <div class="overlay-box" id="overlayBox">
+            <div class="icon" id="iconDisplay">📺</div>
+            <h2 id="titleDisplay">Đăng ký kênh YouTube</h2>
+            <p id="descDisplay">
+                Để sử dụng công cụ tính BHXH, vui lòng <strong>đăng ký kênh</strong> của chúng tôi trên YouTube.
+                Một cú click nhỏ giúp chúng tôi có thêm động lực phát triển!
+            </p>
+            <a href="https://youtube.com/@bhxhbhytlc?si=Vjx489aXM1n0beZ0" target="_blank" class="btn-youtube" id="subscribeBtn">▶  Đăng ký kênh</a>
+            <div class="sub-text" id="subText">
+                ⏳ Sau khi đăng ký, trang sẽ <strong>tự động tải lại sau 5 giây</strong> để bạn sử dụng công cụ.
+            </div>
+            <div class="waiting" id="waitingDisplay">
+                <span class="spinner"></span>
+                Đang chờ bạn đăng ký... Trang sẽ tự động tải lại sau 5 giây.
+            </div>
+            <button class="skip-btn" id="skipBtn">Bỏ qua (dùng thử)</button>
         </div>
-        <div class="waiting" id="waitingDisplay">
-            <span class="spinner"></span>
-            Đang chờ bạn đăng ký... Trang sẽ tự động tải lại sau 5 giây.
-        </div>
-        <button class="skip-btn" id="skipBtn">Bỏ qua (dùng thử)</button>
     </div>
-</div>
 
     <!-- ===== APP ===== -->
     <div class="app">
@@ -612,7 +652,7 @@
         <!-- ===== HEADER ===== -->
         <div class="header">
             <h1><span>📊</span> BHXH Tool</h1>
-            <span class="ver">v2.0</span>
+            <span class="ver">v2.1</span>
             <span class="zalo">📱 Zalo 0976974026</span>
         </div>
 
@@ -622,10 +662,11 @@
             <button class="tab" data-tab="tab2"><span class="icon">💰</span>Đóng bù</button>
             <button class="tab" data-tab="tab3"><span class="icon">📅</span>Đóng trước</button>
             <button class="tab" data-tab="tab4"><span class="icon">📋</span>Tự nguyện</button>
+            <button class="tab" data-tab="tab5"><span class="icon">🕊️</span>Tử tuất</button>
         </div>
 
         <!-- ============================================= -->
-        <!-- TAB 1: LƯƠNG HƯU (ĐÃ BỎ THÁNG SINH) -->
+        <!-- TAB 1: LƯƠNG HƯU -->
         <!-- ============================================= -->
         <div class="panel active" id="tab1">
             <div class="note">
@@ -916,6 +957,126 @@
                     <div class="card">
                         <div class="lbl">Số lần/năm</div>
                         <div class="val" id="volTimes">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================= -->
+        <!-- TAB 5: TỬ TUẤT (MỚI) -->
+        <!-- ============================================= -->
+        <div class="panel" id="tab5">
+            <div class="note note-danger">
+                🕊️ <strong>Chế độ tử tuất</strong> – Theo Điều 84 và Điều 110 Luật BHXH 2024, NĐ 159/2025.<br>
+                Người tham gia BHXH tự nguyện đóng từ đủ <strong>60 tháng (5 năm)</strong> trở lên, khi qua đời, thân nhân được hưởng:
+                <br>• <strong>Trợ cấp mai táng</strong>: <code>10 × Mức lương cơ sở</code> (thời điểm hiện tại)
+                <br>• <strong>Trợ cấp tuất một lần</strong>: <code>Σ (Thu nhập đóng × Hệ số trượt giá năm i × 2 × số tháng đóng / 12)</code>
+                <br><br>
+                <strong>📌 Mức lương cơ sở hiện hành:</strong> 2.530.000 đồng (từ 01/7/2026).
+            </div>
+
+            <div class="row">
+                <div class="field">
+                    <label>Thu nhập đóng <span class="hint">(VNĐ/tháng)</span></label>
+                    <input type="number" id="tuatIncome" value="1500000" step="100000" min="1500000" />
+                </div>
+                <div class="field">
+                    <label>Đối tượng</label>
+                    <select id="tuatSubject">
+                        <option value="normal">Bình thường</option>
+                        <option value="ethnic" selected>Dân tộc thiểu số</option>
+                        <option value="nearpoor">Cận nghèo</option>
+                        <option value="poor">Nghèo</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="field">
+                    <label>Năm bắt đầu đóng</label>
+                    <input type="number" id="tuatStartYear" value="2015" min="2000" max="2030" />
+                </div>
+                <div class="field">
+                    <label>Tháng bắt đầu đóng</label>
+                    <select id="tuatStartMonth">
+                        <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                        <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                        <option value="7" selected>7</option><option value="8">8</option><option value="9">9</option>
+                        <option value="10">10</option><option value="11">11</option><option value="12">12</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="field">
+                    <label>Năm kết thúc đóng</label>
+                    <input type="number" id="tuatEndYear" value="2020" min="2000" max="2030" />
+                </div>
+                <div class="field">
+                    <label>Tháng kết thúc đóng</label>
+                    <select id="tuatEndMonth">
+                        <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                        <option value="4">4</option><option value="5">5</option><option value="6" selected>6</option>
+                        <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+                        <option value="10">10</option><option value="11">11</option><option value="12">12</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="field">
+                    <label>Năm hiện tại <span class="hint">(thời điểm tính)</span></label>
+                    <input type="number" id="tuatCurrentYear" value="2026" readonly />
+                </div>
+                <div class="field">
+                    <label>Mức lương cơ sở <span class="hint">(VNĐ)</span></label>
+                    <input type="number" id="tuatBaseSalary" value="2530000" step="10000" min="1000000" />
+                </div>
+            </div>
+
+            <button class="btn btn-danger" id="btnCalcTuat">🕊️ Tính chế độ tử tuất</button>
+
+            <div class="result" id="r5">
+                <div class="label">
+                    <span>📌 Tổng quyền lợi tử tuất</span>
+                    <span class="badge badge-danger" id="tuatBadge">—</span>
+                </div>
+                <div class="number" id="tuatTotal">— <small>VNĐ</small></div>
+                <div class="sub-info" id="tuatSubInfo"></div>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="lbl">Trợ cấp mai táng</div>
+                        <div class="val" id="tuatMaiTang">0 <small>VNĐ</small></div>
+                    </div>
+                    <div class="card">
+                        <div class="lbl">Trợ cấp tuất 1 lần</div>
+                        <div class="val" id="tuatTuat">0 <small>VNĐ</small></div>
+                    </div>
+                    <div class="card">
+                        <div class="lbl">Tổng tiền đã đóng</div>
+                        <div class="val" id="tuatDaDong">0 <small>VNĐ</small></div>
+                    </div>
+                    <div class="card" style="background-color:#CCCCFF;">
+                        <div class="lbl">Chênh lệch (Hưởng - Đóng)</div>
+                        <div class="val" id="tuatChenhLech">0 <small>VNĐ</small></div>
+                    </div>
+                </div>
+
+                <div style="margin-top:14px;">
+                    <button class="toggle-btn" id="toggleDetailTuatBtn">
+                        <span class="arrow" id="arrowTuatIcon">▼</span> Xem chi tiết tính lương bình quân
+                    </button>
+                    <div class="detail-table-wrap" id="detailTuatWrap">
+                        <table class="detail-table">
+                            <thead><tr><th>Năm</th><th>Hệ số</th><th>Số tháng</th><th>Lương tháng</th><th>Đóng góp</th><th>Tuất năm</th></tr></thead>
+                            <tbody id="detailTuatBody"><tr><td colspan="6" style="padding:16px;color:#8a9fb0;">⏳ Nhập và bấm tính</td></tr></tbody>
+                            <tfoot id="detailTuatFoot" style="display:none;">
+                                <tr class="total-row">
+                                    <td colspan="5" style="text-align:right;padding-right:12px;">Tổng tuất:</td>
+                                    <td id="totalTuatDisplay">0</td>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
             </div>
