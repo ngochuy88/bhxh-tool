@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>BHXH Tool</title>
+    <style>
+        /* ===== RESET ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f4f8;
+            min-height: 100vh;
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            color: #1a2332;
+            touch-action: manipulation;
+        }
+
+        .app {
+            max-width: 480px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 20px 18px 28px;
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.06);
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 14px;
+            border-bottom: 2px solid #eef2f7;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        .header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0a2540;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .header h1 span {
+            font-size: 22px;
+        }
+        .header .ver {
+            font-size: 11px;
+            color: #8a9bb5;
+            background: #eef2f7;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .header .zalo {
+            font-size: 11px;
+            color: #1a4972;
+            background: #e8f0fe;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        /* ===== TABS ===== */
+        .tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 4px;
+            margin-bottom: 18px;
+        }
+        .tab {
+            padding: 10px 4px;
+            border: none;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            color: #6a7f9b;
+            background: #f0f4f8;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: center;
+            line-height: 1.2;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .tab .icon {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
+        .tab:hover {
+            background: #e6ecf3;
+        }
+        .tab.active {
+            background: #1a4972;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(26, 73, 114, 0.2);
+        }
+
+        /* ===== PANELS ===== */
+        .panel {
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+        .panel.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(6px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== NOTE ===== */
+        .note {
+            background: #f2f8fe;
+            border-left: 4px solid #1a6b8a;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 12px;
+            color: #1e3a5f;
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+        .note code {
+            background: #dce6ef;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* ===== FORM ===== */
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+        }
+        .field {
+            margin-bottom: 12px;
+        }
+        .field label {
+            display: block;
+            font-weight: 500;
+            font-size: 13px;
+            color: #1e3a5f;
+            margin-bottom: 4px;
+        }
+        .field label .hint {
+            font-weight: 400;
+            color: #8a9bb5;
+            font-size: 11px;
+        }
+        .field input,
+        .field select {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 15px;
+            border: 1.5px solid #dce3ec;
+            border-radius: 12px;
+            background: #fafcff;
+            transition: 0.15s;
+            color: #0f1e33;
+            appearance: none;
+            -webkit-appearance: none;
+            touch-action: manipulation;
+        }
+        .field input:focus,
+        .field select:focus {
+            outline: none;
+            border-color: #1a4972;
+            box-shadow: 0 0 0 4px rgba(26, 73, 114, 0.08);
+            background: #fff;
+        }
+        .field select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234a6a85' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .btn:active {
+            transform: scale(0.97);
+        }
+        .btn-primary {
+            background: #1a4972;
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(26, 73, 114, 0.2);
+        }
+        .btn-primary:hover {
+            background: #0f3552;
+        }
+        .btn-success {
+            background: #1e7e34;
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(30, 126, 52, 0.2);
+        }
+        .btn-success:hover {
+            background: #146c2a;
+        }
+        .btn-warning {
+            background: #b8860b;
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(184, 134, 11, 0.2);
+        }
+        .btn-warning:hover {
+            background: #9a7209;
+        }
+
+        /* ===== RESULT ===== */
+        .result {
+            background: #f2f6fc;
+            border-radius: 16px;
+            padding: 18px 20px;
+            margin-top: 16px;
+            border-left: 5px solid #1a6b8a;
+        }
+        .result .label {
+            font-weight: 500;
+            color: #1e4b6e;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .result .number {
+            font-size: 32px;
+            font-weight: 700;
+            color: #003057;
+            margin: 4px 0 2px;
+        }
+        .result .number small {
+            font-size: 18px;
+            font-weight: 400;
+            color: #2a5270;
+        }
+        .result .retire-date {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a4972;
+            margin: 4px 0 8px;
+        }
+
+        /* ===== GRID CARDS ===== */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .card {
+            background: #fff;
+            padding: 10px 12px;
+            border-radius: 12px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+        }
+        .card .lbl {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: #4b6f8f;
+            font-weight: 600;
+        }
+        .card .val {
+            font-size: 17px;
+            font-weight: 600;
+            color: #0b2c47;
+            margin-top: 2px;
+        }
+        .card .val small {
+            font-size: 12px;
+            font-weight: 400;
+            color: #4b6f8f;
+        }
+
+        /* ===== BADGE ===== */
+        .badge {
+            background: #dce8f5;
+            border-radius: 30px;
+            padding: 2px 12px;
+            font-size: 11px;
+            font-weight: 500;
+            color: #1e4b77;
+            display: inline-block;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        /* ===== TOGGLE DETAIL ===== */
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: #1a4972;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            padding: 8px 0 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .toggle-btn:hover {
+            color: #0f3552;
+        }
+        .toggle-btn .arrow {
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+        .toggle-btn .arrow.open {
+            transform: rotate(180deg);
+        }
+
+        .detail-table-wrap {
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.35s ease;
+        }
+        .detail-table-wrap.open {
+            max-height: 800px;
+        }
+        .detail-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-top: 12px;
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+        .detail-table th {
+            background: #e9eff4;
+            color: #1d3b5c;
+            font-weight: 600;
+            padding: 8px 6px;
+            text-align: center;
+            font-size: 11px;
+            border-bottom: 2px solid #d0dae6;
+        }
+        .detail-table td {
+            padding: 6px;
+            text-align: center;
+            border-bottom: 1px solid #eef2f7;
+            color: #1f3a57;
+        }
+        .detail-table tr:nth-child(even) {
+            background: #fafdff;
+        }
+        .detail-table tr.highlight {
+            background: #e6f0fa;
+        }
+        .detail-table .total-row {
+            font-weight: 600;
+            background: #e9eff4;
+        }
+
+        .text-success {
+            color: #1e7e34;
+        }
+        .text-warning {
+            color: #b8860b;
+        }
+
+        /* ===== FOOTNOTE ===== */
+        .footnote {
+            margin-top: 16px;
+            font-size: 11px;
+            color: #6a7f9b;
+            background: #f5f7fa;
+            padding: 12px 16px;
+            border-radius: 12px;
+            line-height: 1.6;
+            text-align: center;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .footnote strong {
+            color: #1a4972;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            .app {
+                padding: 16px 12px 20px;
+                border-radius: 20px;
+            }
+            .tabs {
+                grid-template-columns: 1fr 1fr;
+            }
+            .row,
+            .row-3 {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            .grid-3 {
+                grid-template-columns: 1fr 1fr;
+            }
+            .result .number {
+                font-size: 26px;
+            }
+            .header h1 {
+                font-size: 18px;
+            }
+            .header .zalo {
+                font-size: 10px;
+                padding: 2px 8px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .app {
+                padding: 32px 36px 36px;
+                border-radius: 32px;
+            }
+            .result .number {
+                font-size: 38px;
+            }
+        }
+
+        /* ===== OVERLAY ===== */
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.4s ease;
+        }
+        #overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .overlay-box {
+            background: #fff;
+            max-width: 400px;
+            width: 90%;
+            padding: 32px 24px 28px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: popIn 0.4s ease;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .overlay-box .icon {
+            font-size: 52px;
+            margin-bottom: 10px;
+        }
+        .overlay-box h2 {
+            font-size: 20px;
+            color: #0a2540;
+            margin-bottom: 6px;
+        }
+        .overlay-box p {
+            font-size: 14px;
+            color: #4a6a85;
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+        .overlay-box .btn-youtube {
+            display: inline-block;
+            background: #ff0000;
+            color: #fff;
+            font-size: 17px;
+            font-weight: 600;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: 0.2s;
+            box-shadow: 0 4px 16px rgba(255, 0, 0, 0.3);
+        }
+        .overlay-box .btn-youtube:hover {
+            transform: scale(1.02);
+        }
+        .overlay-box .btn-youtube:active {
+            transform: scale(0.97);
+        }
+        .overlay-box .sub-text {
+            font-size: 12px;
+            color: #8a9bb5;
+            margin-top: 14px;
+        }
+        .overlay-box .sub-text strong {
+            color: #1a4972;
+        }
+        .overlay-box .waiting {
+            display: none;
+            margin-top: 14px;
+            font-size: 14px;
+            color: #1a4972;
+            font-weight: 500;
+        }
+        .overlay-box .waiting .spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid #dce3ec;
+            border-top-color: #1a4972;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .overlay-box .skip-btn {
+            background: none;
+            border: none;
+            color: #1a4972;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-top: 12px;
+            padding: 6px 12px;
+        }
+        .overlay-box .skip-btn:hover {
+            color: #0f3552;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== OVERLAY ĐĂNG KÝ KÊNH ===== -->
+   <div id="overlay">
+    <div class="overlay-box" id="overlayBox">
+        <div class="icon" id="iconDisplay">📺</div>
+        <h2 id="titleDisplay">Đăng ký kênh YouTube</h2>
+        <p id="descDisplay">
+            Để sử dụng công cụ tính BHXH, vui lòng <strong>đăng ký kênh</strong> của chúng tôi trên YouTube.
+            Một cú click nhỏ giúp chúng tôi có thêm động lực phát triển!
+        </p>
+        <a href="https://youtube.com/@bhxhbhytlc?si=Vjx489aXM1n0beZ0" target="_blank" class="btn-youtube" id="subscribeBtn">▶  Đăng ký kênh</a>
+        <div class="sub-text" id="subText">
+            ⏳ Sau khi đăng ký, trang sẽ <strong>tự động tải lại sau 5 giây</strong> để bạn sử dụng công cụ.
+        </div>
+        <div class="waiting" id="waitingDisplay">
+            <span class="spinner"></span>
+            Đang chờ bạn đăng ký... Trang sẽ tự động tải lại sau 5 giây.
+        </div>
+        <button class="skip-btn" id="skipBtn">Bỏ qua (dùng thử)</button>
+    </div>
+</div>
+
+    <!-- ===== APP ===== -->
+    <div class="app">
+
+        <!-- ===== HEADER ===== -->
+        <div class="header">
+            <h1><span>📊</span> BHXH Tool</h1>
+            <span class="ver">v2.0</span>
+            <span class="zalo">📱 Zalo 0976974026</span>
+        </div>
+
+        <!-- ===== TABS ===== -->
+        <div class="tabs">
+            <button class="tab active" data-tab="tab1"><span class="icon">📈</span>Lương hưu</button>
+            <button class="tab" data-tab="tab2"><span class="icon">💰</span>Đóng bù</button>
+            <button class="tab" data-tab="tab3"><span class="icon">📅</span>Đóng trước</button>
+            <button class="tab" data-tab="tab4"><span class="icon">📋</span>Tự nguyện</button>
+        </div>
+
+        <!-- ============================================= -->
+        <!-- TAB 1: LƯƠNG HƯU (ĐÃ BỎ THÁNG SINH) -->
+        <!-- ============================================= -->
+        <div class="panel active" id="tab1">
+            <div class="note">
+                📌 <strong>Mô phỏng lương hưu</strong> theo Luật BHXH 2024, NĐ 158/2025.<br>
+                Hệ số trượt giá tra bảng 1980–2026 (nếu &lt;1995 → 5.81; &gt;2026 → 1.00).
+            </div>
+
+            <div class="row">
+                <div class="field">
+                    <label>Năm sinh</label>
+                    <input type="number" id="birthYear" value="1988" min="1940" max="2010" />
+                </div>
+                <div class="field">
+                    <label>Giới tính</label>
+                    <select id="gender">
+                        <option value="male">Nam</option>
+                        <option value="female">Nữ</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="field">
+                    <label>Lương tháng <span class="hint">(VNĐ)</span></label>
+                    <input type="number" id="salary1" value="3000000" step="100000" />
+                </div>
+                <div class="field">
+                    <label>Số năm đóng <span class="hint">(mong muốn)</span></label>
+                    <input type="number" id="yearsInput" value="15" min="15" step="1" />
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="btnCalcPension">🔄 Tính lại</button>
+
+            <div class="result" id="r1">
+                <div class="label">
+                    <span>📌 Lương hưu dự kiến</span>
+                    <span class="badge" id="range1">15 năm</span>
+                </div>
+                <div class="number" id="pension1">— <small>VNĐ</small></div>
+                <div class="retire-date" id="retireDate1"></div>
+                <div class="grid-3">
+                    <div class="card">
+                        <div class="lbl">Tổng năm đóng</div>
+                        <div class="val" id="years1">0</div>
+                    </div>
+                    <div class="card">
+                        <div class="lbl">Tỷ lệ hưởng</div>
+                        <div class="val" id="rate1">0%</div>
+                    </div>
+                    <div class="card">
+                        <div class="lbl">Bình quân</div>
+                        <div class="val" id="avg1">0 <small>VNĐ</small></div>
+                    </div>
+                </div>
+                <div style="margin-top:12px;">
+                    <button class="toggle-btn" id="toggleDetailBtn">
+                        <span class="arrow" id="arrowIcon">▼</span> Xem chi tiết tính toán
+                    </button>
+                </div>
+                <div class="detail-table-wrap" id="detailWrap">
+                    <table class="detail-table" id="detailTable">
+                        <thead>
+                            <tr><th>Năm đóng</th><th>Năm gốc</th><th>Hệ số</th><th>Lương tháng</th><th>Lương năm</th><th>Ghi chú</th></tr>
+                        </thead>
+                        <tbody id="detailBody">
+                            <tr><td colspan="6" style="padding:20px;color:#8a9fb0;">⏳ Nhập thông tin và bấm tính</td></tr>
+                        </tbody>
+                        <tfoot id="detailFoot" style="display:none;">
+                            <tr class="total-row">
+                                <td colspan="5" style="text-align:right;padding-right:12px;">Tổng lương điều chỉnh:</td>
+                                <td id="totalAdjDisplay">0</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================= -->
+        <!-- TAB 2: ĐÓNG BÙ -->
+        <!-- ============================================= -->
+        <div class="panel" id="tab2">
+            <div class="note">
+                💰 <strong>Đóng cho những năm còn thiếu</strong> theo Điều 7 NĐ 159/2025:<br>
+                <code>Tiền đóng gốc = 22% × Thu nhập × Số tháng</code><br>
+                <code>Lãi = Σ [Tiền đóng tháng i × ((1+r)^(số tháng còn lại) - 1)]</code><br>
+                <code>Phải đóng = Tiền đóng gốc + Lãi - Hỗ trợ NSNN</code>
+            </div>
+
+            <div class="row">
+                <div class="field">
+                    <label>Số năm đã đóng <span class="hint">(năm/tháng)</span></label>
+                    <input type="text" id="paid" value="0" placeholder="VD: 0" />
+                </div>
+                <div class="field">
+                    <label>Giới tính</label>
+                    <select id="gender2">
+                        <option value="male">Nam</option>
+                        <option value="female" selected>Nữ</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="field">
+                    <label>Thu nhập đóng bù <span class="hint">(VNĐ/tháng)</span></label>
+                    <input type="number" id="buyIncome" value="1500000" step="100000" min="1500000" />
+                </div>
+                <div class="field">
+                    <label>Đối tượng</label>
+                    <select id="subject2">
+                        <option value="normal">Bình thường</option>
+                        <option value="ethnic" selected>Dân tộc thiểu số</option>
+                        <option value="nearpoor">Cận nghèo</option>
+                        <option value="poor">Nghèo</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="field">
+                    <label>Lãi suất <span class="hint">(%/tháng)</span></label>
+                    <input type="number" id="rate2" value="0.31" step="0.01" min="0" />
+                </div>
+                <div class="field">
+                    <label>Số tháng đóng bù</label>
+                    <input type="number" id="months2" value="60" min="1" max="60" />
+                </div>
+            </div>
+
+            <button class="btn btn-warning" id="btnCalcBuyback">💰 Tính đóng bù</button>
+
+            <div class="result" id="r2">
+                <div class="label">
+                    <span>Tổng tiền đóng bù</span>
+                    <span class="badge badge-warning" id="badge2">60 tháng</span>
+                </div>
+                <div class="number" id="buyTotal">— <small>VNĐ</small></div>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="lbl">Tiền đóng gốc</div>
+                        <div class="val" id="buyPrincipal">0 <small>VNĐ</small></div>
+                    </div>
+                    <div class="card">
+                        <div class="lbl">Tiền lãi</div>
+                        <div class="val text-warning" id="buyInterest">0 <small>VNĐ</small></div>
+                    </div>
+                    <div class="card">
+                        <div class="lbl">Hỗ trợ NSNN</div>
+                        <div class="val text-success" id="buySupport">0 <small>VNĐ</small></div>
+                    </div>
+                    <div class="card">
+                        <div class="lbl">Mức đóng/tháng (22%)</div>
+                        <div class="val" id="buyMonthly">0 <small>VNĐ</small></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================= -->
+        <!-- TAB 3: ĐÓNG TRƯỚC -->
+        <!-- ============================================= -->
+        <div class="panel" id="tab3">
+            <div class="note">
+                📅 <strong>Đóng trước nhiều tháng</strong> theo Điều 6 NĐ 159/2025:<br>
+               <code>PV = Σ [TNᵢ×22% / (1+r)^(t-1)]</code><br> 
+                Nhập số tháng từ 24 đến 60.
+            </div>
+
+            <div class="row">
+                <div class="field">
+                    <label>Thu nhập đóng <span class="hint">(VNĐ/tháng)</span></label>
+                    <input type="number" id="aheadIncome" value="2000000" step="100000" min="1500000" />
+                </div>
+                <div class="field">
+                    <label>Đối tượng</label>
+                    <select id="subject3">
+                        <option value="normal">Bình thường</option>
+                        <option value="ethnic">Dân tộc thiểu số</option>
+                        <option value="nearpoor">Cận nghèo</option>
+                        <option value="poor">Nghèo</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="field">
+                    <label>Số tháng đóng trước</label>
+                    <input type="number" id="aheadMonthsInput" value="60" min="24" max="60" />
+                </div>
+                <div class="field">
+                    <label>Lãi suất chiết khấu <span class="hint">(%/tháng)</span></label>
+                    <input type="number" id="aheadRate" value="0.31" step="0.01" min="0" />
+                </div>
+            </div>
+
+            <button class="btn btn-success" id="btnCalcAhead">📅 Tính đóng trước</button>
+
+            <div class="result" id="r3">
+                <div class="label">
+                    <span>Số tiền phải đóng</span>
+                    <span class="badge badge-success" id="range3">60 tháng</span>
+                </div>
+                <div class="number" id="aheadTotal">— <small>VNĐ</small></div>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="lbl">Tiền đóng gốc</div>
+                        <div class="val" id="aheadPrincipal">0 <small>VNĐ</small></div>
+                    </div>
+                    <div class="card">
+                        <div class="lbl">Chiết khấu</div>
+                        <div class="val text-success" id="aheadDiscount">0 <small>VNĐ</small></div>
+                    </div>
+                    <div class="card">
+                        <div class="lbl">NSNN hỗ trợ</div>
+                        <div class="val text-success" id="aheadSupport">0 <small>VNĐ</small></div>
+                    </div>
+                    <div class="card">
+                        <div class="lbl">Số tháng</div>
+                        <div class="val" id="aheadMonthsDisplay">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================= -->
+        <!-- TAB 4: TỰ NGUYỆN -->
+        <!-- ============================================= -->
+        <div class="panel" id="tab4">
+            <div class="note">
+                📋 <strong>Đóng BHXH tự nguyện</strong> – Nhà nước hỗ trợ tối đa 10 năm (120 tháng).
+            </div>
+
+            <div class="row">
+                <div class="field">
+                    <label>Thu nhập đóng <span class="hint">(VNĐ/tháng)</span></label>
+                    <input type="number" id="volIncome" value="3000000" step="100000" min="1500000" />
+                </div>
+                <div class="field">
+                    <label>Đối tượng</label>
+                    <select id="subject4">
+                        <option value="normal">Bình thường</option>
+                        <option value="ethnic">Dân tộc thiểu số</option>
+                        <option value="nearpoor">Cận nghèo</option>
+                        <option value="poor">Nghèo</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="field">
+                    <label>Phương thức đóng</label>
+                    <select id="volMethod">
+                        <option value="1">1 tháng/lần</option>
+                        <option value="3">3 tháng/lần</option>
+                        <option value="6">6 tháng/lần</option>
+                        <option value="12" selected>12 tháng/lần</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Số tháng đã hỗ trợ</label>
+                    <input type="number" id="volSupported" value="0" min="0" max="120" />
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="btnCalcVoluntary">📋 Tính</button>
+
+            <div class="result" id="r4">
+                <div class="label">
+                    <span>Mức đóng tự nguyện</span>
+                    <span class="badge" id="volBadge">Bình thường</span>
+                </div>
+                <div class="number" id="volTotal">— <small>VNĐ</small></div>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="lbl">Đóng gốc (22%)</div>
+                        <div class="val" id="volBase">0 <small>VNĐ</small></div>
+                    </div>
+                    <div class="card">
+                        <div class="lbl">Hỗ trợ NN</div>
+                        <div class="val text-success" id="volSupport">0 <small>VNĐ</small></div>
+                    </div>
+                    <div class="card">
+                        <div class="lbl">Tiền đóng mỗi lần</div>
+                        <div class="val" id="volPerPay">0 <small>VNĐ</small></div>
+                    </div>
+                    <div class="card">
+                        <div class="lbl">Số lần/năm</div>
+                        <div class="val" id="volTimes">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== FOOTNOTE ===== -->
+        <div class="footnote">
+            ⚠️ Tham khảo Luật BHXH 2024, NĐ 158/2025, NĐ 159/2025. Kết quả chỉ mang tính ước lượng.
+        </div>
+
+    </div>
+
+    <!-- ===== LOAD JAVASCRIPT ===== -->
+    <script src="script.js"></script>
+
+</body>
+</html>
