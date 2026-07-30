@@ -532,27 +532,47 @@ window.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('bhxh_subscribed', 'true');
         overlay.classList.add('hidden');
     });
-    // ============================================================
-// ĐẾM LƯỢT TRUY CẬP
+// ============================================================
+// ĐẾM LƯỢT TRUY CẬP (với fallback localStorage)
 // ============================================================
 function countView() {
-    const url = 'https://api.countapi.xyz/hit/bhxh-tool/views';
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            const el = document.getElementById('viewCount');
-            if (el) el.textContent = data.value;
+    const el = document.getElementById('viewCount');
+    if (!el) return;
+
+    // 1. Thử gọi API CountAPI
+    fetch('https://api.countapi.xyz/hit/bhxh-tool/views')
+        .then(response => {
+            if (!response.ok) throw new Error('API response not OK');
+            return response.json();
         })
-        .catch(() => {
-            const el = document.getElementById('viewCount');
-            if (el) el.textContent = '?';
+        .then(data => {
+            console.log('✅ CountAPI thành công:', data.value);
+            el.textContent = data.value;
+            // Lưu vào localStorage để dùng cho lần sau (fallback)
+            localStorage.setItem('bhxh_view_count', data.value);
+        })
+        .catch(err => {
+            console.warn('⚠️ CountAPI thất bại:', err.message);
+            // 2. Fallback: dùng localStorage
+            try {
+                let count = parseInt(localStorage.getItem('bhxh_view_count')) || 0;
+                count += 1;
+                localStorage.setItem('bhxh_view_count', count);
+                el.textContent = count;
+                console.log('📊 Dùng localStorage (fallback):', count);
+            } catch (e) {
+                // Nếu localStorage cũng lỗi
+                el.textContent = '?';
+                console.error('❌ Lỗi localStorage:', e);
+            }
         });
 }
 
-    // Gọi hàm khi trang tải xong
-    if (document.readyState === 'loading') {
+// Gọi khi trang tải
+if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', countView);
-    } else {
+} else {
     countView();
 }
+
 })();
