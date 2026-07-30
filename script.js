@@ -533,42 +533,39 @@ window.addEventListener('DOMContentLoaded', function() {
         overlay.classList.add('hidden');
     });
 // ============================================================
-// ĐẾM LƯỢT TRUY CẬP (với fallback localStorage)
+// ĐẾM LƯỢT TRUY CẬP (CountAPI + Fallback localStorage)
 // ============================================================
 function countView() {
     const el = document.getElementById('viewCount');
     if (!el) return;
 
-    // 1. Thử gọi API CountAPI
+    // Thử gọi CountAPI
     fetch('https://api.countapi.xyz/hit/bhxh-tool/views')
-        .then(response => {
-            if (!response.ok) throw new Error('API response not OK');
-            return response.json();
+        .then(res => {
+            if (!res.ok) throw new Error('API error');
+            return res.json();
         })
         .then(data => {
-            console.log('✅ CountAPI thành công:', data.value);
             el.textContent = data.value;
-            // Lưu vào localStorage để dùng cho lần sau (fallback)
-            localStorage.setItem('bhxh_view_count', data.value);
+            // Lưu vào localStorage để fallback
+            try {
+                localStorage.setItem('bhxh_view_count', data.value);
+            } catch (e) {}
         })
-        .catch(err => {
-            console.warn('⚠️ CountAPI thất bại:', err.message);
-            // 2. Fallback: dùng localStorage
+        .catch(() => {
+            // Fallback: dùng localStorage
             try {
                 let count = parseInt(localStorage.getItem('bhxh_view_count')) || 0;
                 count += 1;
                 localStorage.setItem('bhxh_view_count', count);
                 el.textContent = count;
-                console.log('📊 Dùng localStorage (fallback):', count);
             } catch (e) {
-                // Nếu localStorage cũng lỗi
                 el.textContent = '?';
-                console.error('❌ Lỗi localStorage:', e);
             }
         });
 }
 
-// Gọi khi trang tải
+// Gọi khi trang load
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', countView);
 } else {
