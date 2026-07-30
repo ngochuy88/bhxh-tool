@@ -532,4 +532,27 @@ window.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('bhxh_subscribed', 'true');
         overlay.classList.add('hidden');
     });
+    // ============================================================
+// ĐẾM LƯỢT TRUY CẬP
+// ============================================================
+function countView() {
+    const url = 'https://api.countapi.xyz/hit/bhxh-tool/views';
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            const el = document.getElementById('viewCount');
+            if (el) el.textContent = data.value;
+        })
+        .catch(() => {
+            const el = document.getElementById('viewCount');
+            if (el) el.textContent = '?';
+        });
+}
+
+    // Gọi hàm khi trang tải xong
+    if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', countView);
+    } else {
+    countView();
+}
 })();
