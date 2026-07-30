@@ -533,39 +533,43 @@ window.addEventListener('DOMContentLoaded', function() {
         overlay.classList.add('hidden');
     });
 // ============================================================
-// ĐẾM LƯỢT TRUY CẬP (CountAPI + Fallback localStorage)
+// ĐẾM LƯỢT TRUY CẬP (localStorage + hiệu ứng đếm)
 // ============================================================
 function countView() {
     const el = document.getElementById('viewCount');
     if (!el) return;
 
-    // Thử gọi CountAPI
-    fetch('https://api.countapi.xyz/hit/bhxh-tool/views')
-        .then(res => {
-            if (!res.ok) throw new Error('API error');
-            return res.json();
-        })
-        .then(data => {
-            el.textContent = data.value;
-            // Lưu vào localStorage để fallback
-            try {
-                localStorage.setItem('bhxh_view_count', data.value);
-            } catch (e) {}
-        })
-        .catch(() => {
-            // Fallback: dùng localStorage
-            try {
-                let count = parseInt(localStorage.getItem('bhxh_view_count')) || 0;
-                count += 1;
-                localStorage.setItem('bhxh_view_count', count);
+    try {
+        // Lấy số đếm hiện tại, tăng lên 1
+        let count = parseInt(localStorage.getItem('bhxh_view_count')) || 0;
+        count += 1;
+        localStorage.setItem('bhxh_view_count', count);
+
+        // Hiệu ứng đếm số từ 0 đến count
+        let start = 0;
+        const duration = 800; // 0.8 giây
+        const startTime = performance.now();
+
+        function updateCounter(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            // Hàm easing để số chạy mượt hơn
+            const eased = progress * (2 - progress);
+            const current = Math.floor(eased * count);
+            el.textContent = current;
+            if (progress < 1) {
+                requestAnimationFrame(updateCounter);
+            } else {
                 el.textContent = count;
-            } catch (e) {
-                el.textContent = '?';
             }
-        });
+        }
+        requestAnimationFrame(updateCounter);
+    } catch (e) {
+        el.textContent = '?';
+    }
 }
 
-// Gọi khi trang load
+// Gọi khi tải trang (bảo đảm)
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', countView);
 } else {
